@@ -3,6 +3,7 @@ import Html.App as Html
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import String exposing (repeat)
+import Card
 
 main =
   Html.beginnerProgram
@@ -12,84 +13,48 @@ main =
     }
 
 type alias Model =
-  { cards : List Card
+  { cards : List Card.Model
   }
-
-type alias Card =
-    {
-        shape: Shape,
-        number: Int,
-        color: Color,
-        selected: Bool
-    }
-
-type Color = Red | Blue | Purple
-
-type Shape = Diamond | Oval | Rectangle
-
-asciiArt : Shape -> String
-asciiArt shape =
-    case shape of
-        Diamond -> "♢"
-        Oval -> "◎"
-        Rectangle -> "▭"
 
 -- MODEL
 
 init : Model
 init =
-  Model [ {shape = Diamond, number = 3, color = Red, selected = False}
-    , {shape = Oval, number = 2, color = Blue, selected = True}
-    , {shape = Rectangle, number = 1, color = Purple}
-    , {shape = Oval, number = 3, color = Red}
-    , {shape = Oval, number = 2, color = Blue}
-    , {shape = Rectangle, number = 3, color = Red}
-    , {shape = Rectangle, number = 3, color = Purple}
-    , {shape = Rectangle, number = 1, color = Red}
-    , {shape = Diamond, number = 3, color = Red}
-    , {shape = Rectangle, number = 3, color = Red}
-    , {shape = Oval, number = 2, color = Blue}
-    , {shape = Diamond, number = 3, color = Purple}
+  Model [
+    Card.init, Card.init, Card.init
   ]
 
 -- UPDATE
 
-type CardMsg = SelectCard
 type Msg
-    = SelectCard Int CardMsg
+    = Modify Int Card.Msg
 
 update : Msg -> Model -> Model
-update msg model =
-    case msg of
-        SelectCard id xxx ->
-            List.map (selectHelper id) model
+update message model =
+    case message of
+        Modify id msg ->
+            { model | cards = updateElement model.cards id msg }
+
+updateElement : List Card.Model -> Int -> Card.Msg -> List Card.Model
+updateElement list indexToSendTo msg =
+  let
+    send : Int -> Card.Model -> Card.Model
+    send index card =
+      if index == indexToSendTo then
+        Card.update msg card
+      else
+        card
+  in
+    List.indexedMap send list
 
 -- VIEW
 
-view : Model -> Html msg
+view : Model -> Html Msg
 view model =
-    let cards = List.map viewIndexedCounter model.cards in
+    let cards = List.indexedMap viewIndexedCounter model.cards in
       div [] cards
 
-renderCard : Card -> Html msg
-renderCard card =
-    div [
-        onClick SelectCard,
-        style
-                [   ("color", toString card.color)
-                  , ("width", "150px")
-                  , ("height", "100px")
-                  , ("line-height", "100px")
-                  , ("font-size", "50px")
-                  , ("border", "1px solid black")
-                  , ("display", "inline-block")
-                ]
-    ] [ text (repeat card.number (asciiArt card.shape) ) ]
+viewIndexedCounter : Int -> Card.Model -> Html Msg
+viewIndexedCounter id model =
+  Html.map (Modify id) (Card.view model)
 
-viewIndexedCounter : Int -> Card -> Html Msg
-viewIndexedCounter {id, model} =
-  Html.map (SelectCard id) (renderCard model)
-
-selectHelper : Int -> Card -> Card
-selectHelper card =
-    card

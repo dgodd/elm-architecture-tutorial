@@ -35,7 +35,7 @@ type Msg = SelectCard
 
 update : Msg -> Model -> Model
 update msg model =
-    model
+    { model | selected = True }
 
 -- VIEW
 
@@ -52,4 +52,4 @@ view card =
                       , ("border", "1px solid black")
                       , ("display", "inline-block")
                     ]
-        ] [ text (repeat card.number (asciiArt card.shape) ) ]
+        ] [ text ((repeat card.number (asciiArt card.shape)) ++ toString card.selected) ]
