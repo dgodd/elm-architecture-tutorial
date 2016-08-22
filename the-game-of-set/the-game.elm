@@ -4,12 +4,15 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import String exposing (repeat)
 import Card
+import Random
+import List exposing (repeat)
 
 main =
-  Html.beginnerProgram
-    { model = init
+  Html.program
+    { init = init
     , view = view
     , update = update
+    , subscriptions = subscriptions
     }
 
 type alias Model =
@@ -18,22 +21,22 @@ type alias Model =
 
 -- MODEL
 
-init : Model
+init : (Model, Cmd Msg)
 init =
-  Model [
-    Card.init, Card.init, Card.init
-  ]
+    (Model [], Random.generate NewGame (Random.int 0 100000000))
 
 -- UPDATE
 
-type Msg
-    = Modify Int Card.Msg
+type Msg = Modify Int Card.Msg | NewGame Int
 
-update : Msg -> Model -> Model
+
+update : Msg -> Model -> (Model, Cmd Msg)
 update message model =
     case message of
         Modify id msg ->
-            { model | cards = updateElement model.cards id msg }
+            ({ model | cards = updateElement model.cards id msg }, Cmd.none)
+        NewGame seed ->
+            ({ model | cards = [Card.init (Random.initialSeed seed)]}, Cmd.none)
 
 updateElement : List Card.Model -> Int -> Card.Msg -> List Card.Model
 updateElement list indexToSendTo msg =
@@ -58,3 +61,8 @@ viewIndexedCounter : Int -> Card.Model -> Html Msg
 viewIndexedCounter id model =
   Html.map (Modify id) (Card.view model)
 
+-- SUBSCRIPTIONS
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+  Sub.none

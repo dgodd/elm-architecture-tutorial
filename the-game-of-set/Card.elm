@@ -5,10 +5,19 @@ import Html.App as Html
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import String exposing (repeat)
+import Random
+import Array
+import Maybe
 
-init: Model
-init =
-    { shape = Diamond, number = 3, color = Red, selected = False }
+init: Random.Seed -> Model
+init seed0 =
+    let
+        (number, seed1) = Random.step (Random.int 1 3) seed0
+        (shapeNum, seed2) = Random.step (Random.int 0 2) seed1
+        potentialShape = Array.get shapeNum (Array.fromList [ Diamond, Oval, Rectangle ])
+        shape = Maybe.withDefault Diamond potentialShape
+    in
+        { shape = shape, number = number, color = Red, selected = False }
 
 type alias Model = {
         shape: Shape,
@@ -31,25 +40,31 @@ asciiArt shape =
 
 -- UPDATE
 
-type Msg = SelectCard
+type Msg = SelectCard | DeselectCard | UpdateNumber Int
 
 update : Msg -> Model -> Model
 update msg model =
-    { model | selected = True }
+    case msg of
+      SelectCard ->
+        { model | selected = True }
+      DeselectCard ->
+        { model | selected = False }
+      UpdateNumber new ->
+        { model | number = new }
 
 -- VIEW
 
 view : Model -> Html Msg
 view card =
     div [
-            onClick SelectCard,
+            onClick (if card.selected then DeselectCard else SelectCard),
             style
                     [   ("color", toString card.color)
                       , ("width", "150px")
                       , ("height", "100px")
                       , ("line-height", "100px")
                       , ("font-size", "50px")
-                      , ("border", "1px solid black")
+                      , ("border", (if card.selected then "5px solid red" else "5px solid black"))
                       , ("display", "inline-block")
                     ]
-        ] [ text ((repeat card.number (asciiArt card.shape)) ++ toString card.selected) ]
+        ] [ text ((repeat card.number (asciiArt card.shape))) ]
