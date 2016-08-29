@@ -9,15 +9,18 @@ import Random
 import Array
 import Maybe
 
-init: Random.Seed -> Model
+init: Random.Seed -> (Model, Random.Seed)
 init seed0 =
     let
         (number, seed1) = Random.step (Random.int 1 3) seed0
         (shapeNum, seed2) = Random.step (Random.int 0 2) seed1
         potentialShape = Array.get shapeNum (Array.fromList [ Diamond, Oval, Rectangle ])
         shape = Maybe.withDefault Diamond potentialShape
+        (colorNum, seed3) = Random.step (Random.int 0 2) seed2
+        potentialColor = Array.get colorNum (Array.fromList [ Red, Blue, Purple ])
+        color = Maybe.withDefault Red potentialColor
     in
-        { shape = shape, number = number, color = Red, selected = False }
+        ({ shape = shape, number = number, color = color, selected = False }, seed3)
 
 type alias Model = {
         shape: Shape,

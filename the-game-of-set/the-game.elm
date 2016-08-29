@@ -36,7 +36,11 @@ update message model =
         Modify id msg ->
             ({ model | cards = updateElement model.cards id msg }, Cmd.none)
         NewGame seed ->
-            ({ model | cards = [Card.init (Random.initialSeed seed)]}, Cmd.none)
+            let
+              f a (b, seed) = Card.init seed
+              cards = List.scanl (f) (Card.init (Random.initialSeed 0), seed) [] |> List.map (\(a,b) -> a) |> List.drop 1
+            in
+              ({ model | cards = cards}, Cmd.none)
 
 updateElement : List Card.Model -> Int -> Card.Msg -> List Card.Model
 updateElement list indexToSendTo msg =
