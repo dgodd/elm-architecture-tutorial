@@ -3,9 +3,7 @@ import Html.App as Html
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import String exposing (repeat)
-import Card
-import Card.Color exposing (..)
-import Card.Shape exposing (..)
+import Card exposing (Color (..), Shape (..))
 
 main =
   Html.beginnerProgram

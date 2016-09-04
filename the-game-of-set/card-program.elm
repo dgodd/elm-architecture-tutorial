@@ -1,6 +1,4 @@
-import Card
-import Card.Color exposing (..)
-import Card.Shape exposing (..)
+import Card exposing (Color (..), Shape (..))
 import Html exposing (..)
 import Html.App as Html
 

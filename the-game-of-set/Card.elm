@@ -1,6 +1,4 @@
-module Card exposing (Model, Msg, update, view)
-import Card.Color exposing (..)
-import Card.Shape exposing (..)
+module Card exposing (Model, Msg, update, view, Color (..), Shape (..))
 import Html exposing (..)
 import Html.App as Html
 import Html.Attributes exposing (..)
@@ -13,6 +11,9 @@ type alias Model = {
         color: Color,
         selected: Bool
     }
+
+type Color = Red | Yellow | Blue
+type Shape = Diamond | Oval | Rectangle
 
 asciiArt : Shape -> String
 asciiArt shape =
