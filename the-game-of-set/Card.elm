@@ -1,14 +1,11 @@
-module Card exposing (Model, Msg, update, view, init)
-
+module Card exposing (Model, Msg, update, view)
+import Card.Color exposing (..)
+import Card.Shape exposing (..)
 import Html exposing (..)
 import Html.App as Html
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import String exposing (repeat)
-
-init: Model
-init =
-    { shape = Diamond, number = 3, color = Red, selected = False }
 
 type alias Model = {
         shape: Shape,
@@ -16,10 +13,6 @@ type alias Model = {
         color: Color,
         selected: Bool
     }
-
-type Color = Red | Blue | Purple
-
-type Shape = Diamond | Oval | Rectangle
 
 asciiArt : Shape -> String
 asciiArt shape =

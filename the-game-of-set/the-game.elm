@@ -4,6 +4,8 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import String exposing (repeat)
 import Card
+import Card.Color exposing (..)
+import Card.Shape exposing (..)
 
 main =
   Html.beginnerProgram
@@ -19,10 +21,7 @@ type alias Model =
 -- MODEL
 
 init : Model
-init =
-  Model [
-    Card.init, Card.init, Card.init
-  ]
+init = { cards = cards }
 
 -- UPDATE
 
@@ -58,3 +57,8 @@ viewIndexedCounter : Int -> Card.Model -> Html Msg
 viewIndexedCounter id model =
   Html.map (Modify id) (Card.view model)
 
+cards : List Card.Model
+cards = [ { shape = Diamond, number = 3, color = Red, selected = False }
+        , { shape = Rectangle, number = 2, color = Blue, selected = False }
+        , { shape = Diamond, number = 1, color = Red, selected = False }
+        ]
