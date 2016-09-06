@@ -73,10 +73,11 @@ view model =
 
 viewIndexedCounter : Int -> Selectable Card.Model -> Html Msg
 viewIndexedCounter id selectable =
-  div [
-        onClick (ToggleSelect id)
+  span [
+        onClick (ToggleSelect id),
+        style [("border", selectableBorder selectable)]
       ] [
-        div [ style [("border", selectableBorder selectable)] ] [Card.view selectable.item]
+        Card.view selectable.item
       ]
 
 selectableBorder : Selectable a -> String
