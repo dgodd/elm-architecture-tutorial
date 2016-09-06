@@ -59,4 +59,5 @@ cards : List Card.Model
 cards = [ { shape = Diamond, number = 3, color = Red, selected = False }
         , { shape = Rectangle, number = 2, color = Blue, selected = False }
         , { shape = Diamond, number = 1, color = Red, selected = False }
+        , { shape = Squiggle, number = 2, color = Yellow, selected = False }
         ]

@@ -13,7 +13,7 @@ type alias Model = {
     }
 
 type Color = Red | Yellow | Blue
-type Shape = Diamond | Oval | Rectangle
+type Shape = Diamond | Oval | Rectangle | Squiggle
 
 asciiArt : Shape -> String
 asciiArt shape =
@@ -21,6 +21,7 @@ asciiArt shape =
         Diamond -> "♢"
         Oval -> "◎"
         Rectangle -> "▭"
+        Squiggle -> "❤︎"
 
 
 -- UPDATE
