@@ -4,7 +4,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import String exposing (repeat)
 import Card exposing (Color (..), Shape (..))
-import Selectable exposing (Selectable, withoutSelection)
+import Selectable exposing (..)
 
 main =
   Html.beginnerProgram
@@ -22,7 +22,7 @@ type alias SelectableCard = Selectable Card.Model
 -- MODEL
 
 init : Model
-init = { cards = List.map withoutSelection cards }
+init = { cards = List.map unselected cards }
 
 
 cards : List Card.Model
@@ -41,18 +41,16 @@ update : Msg -> Model -> Model
 update message model =
     case message of
         ToggleSelect id ->
-            { model | cards = updateElement model.cards id }
+            { model | cards = applyAtIndex id toggle model.cards }
 
-updateElement : List SelectableCard -> Int -> List SelectableCard
-updateElement selectableCards indexToSendTo =
-  let
-    withUpdateAtIndex index selectable =
-      if index == indexToSendTo then
-        Selectable.toggle selectable
-      else
-        selectable
-  in
-    List.indexedMap withUpdateAtIndex selectableCards
+applyAtIndex : Int -> (a -> a) -> List a -> List a
+applyAtIndex indexToSendTo action elements =
+    let
+        applyIfMatching index element =
+            if index == indexToSendTo then action element
+            else element
+    in
+        List.indexedMap applyIfMatching elements
 
 -- VIEW
 

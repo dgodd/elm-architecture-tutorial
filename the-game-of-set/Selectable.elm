@@ -5,8 +5,8 @@ type alias Selectable a =
     , selected: Bool
     }
 
-withoutSelection : item -> Selectable item
-withoutSelection item =
+unselected : item -> Selectable item
+unselected item =
     { item = item
     , selected = False
     }
