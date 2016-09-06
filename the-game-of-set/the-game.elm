@@ -15,6 +15,7 @@ main =
 
 type alias Model =
   { cards : List (SelectableCard)
+  , validSetSelected : Bool
   }
 
 type alias SelectableCard = Selectable Card.Model
@@ -22,13 +23,20 @@ type alias SelectableCard = Selectable Card.Model
 -- MODEL
 
 init : Model
-init = { cards = List.map unselected cards }
+init = { cards = List.map unselected cards
+       , validSetSelected = False
+       }
 
 
 cards : List Card.Model
 cards = [ { shape = Diamond, number = 3, color = Red }
         , { shape = Rectangle, number = 2, color = Blue }
         , { shape = Diamond, number = 1, color = Red }
+        , { shape = Squiggle, number = 2, color = Blue }
+        , { shape = Squiggle, number = 1, color = Blue }
+        , { shape = Squiggle, number = 3, color = Blue }
+        , { shape = Squiggle, number = 1, color = Blue }
+        , { shape = Squiggle, number = 2, color = Blue }
         , { shape = Squiggle, number = 2, color = Blue }
         ]
 
@@ -41,7 +49,22 @@ update : Msg -> Model -> Model
 update message model =
     case message of
         ToggleSelect id ->
-            { model | cards = applyAtIndex id toggle model.cards }
+            updateSelectionsANDSetStatus id model
+
+updateSelectionsANDSetStatus : Int -> Model -> Model
+updateSelectionsANDSetStatus index model =
+    let updatedCards = applyAtIndex index toggle model.cards in
+        { model | cards = updatedCards
+        , validSetSelected = isAValidSet updatedCards
+        }
+
+isAValidSet : List SelectableCard -> Bool
+isAValidSet cards =
+    let filtered = List.filter selected cards in
+        List.length filtered == 3
+
+selected : Selectable item -> Bool
+selected selectable = selectable.selected
 
 applyAtIndex : Int -> (a -> a) -> List a -> List a
 applyAtIndex indexToSendTo action elements =
@@ -57,7 +80,7 @@ applyAtIndex indexToSendTo action elements =
 view : Model -> Html Msg
 view model =
     let cards = List.indexedMap viewIndexedCard model.cards in
-      div [] cards
+      div [] (cards ++ [div [] [text ("Set status" ++ toString(model.validSetSelected))]])
 
 viewIndexedCard : Int -> SelectableCard -> Html Msg
 viewIndexedCard id selectable =
