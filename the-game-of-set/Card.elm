@@ -1,4 +1,4 @@
-module Card exposing (Model, Msg, update, view, Color (..), Shape (..))
+module Card exposing (Model, view, Color (..), Shape (..))
 import Html exposing (..)
 import Html.App as Html
 import Html.Attributes exposing (..)
@@ -8,8 +8,7 @@ import String exposing (repeat)
 type alias Model = {
         shape: Shape,
         number: Int,
-        color: Color,
-        selected: Bool
+        color: Color
     }
 
 type Color = Red | Yellow | Blue
@@ -23,21 +22,11 @@ asciiArt shape =
         Rectangle -> "▭"
         Squiggle -> "❤︎"
 
-
--- UPDATE
-
-type Msg = SelectCard
-
-update : Msg -> Model -> Model
-update msg model =
-    { model | selected = True }
-
 -- VIEW
 
-view : Model -> Html Msg
+view : Model -> Html msg
 view card =
     div [
-            onClick SelectCard,
             style
                     [   ("color", toString card.color)
                       , ("width", "150px")
@@ -47,4 +36,4 @@ view card =
                       , ("border", "1px solid black")
                       , ("display", "inline-block")
                     ]
-        ] [ text ((repeat card.number (asciiArt card.shape)) ++ toString card.selected) ]
+        ] [ text ((repeat card.number (asciiArt card.shape))) ]
