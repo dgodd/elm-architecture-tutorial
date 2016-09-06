@@ -4,6 +4,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import String exposing (repeat)
 import Card exposing (Color (..), Shape (..))
+import Selectable exposing (Selectable, withoutSelection)
 
 main =
   Html.beginnerProgram
@@ -16,11 +17,6 @@ type alias Model =
   { cards : List (SelectableCard)
   }
 
-type alias Selectable a =
-    { item: a
-    , selected: Bool
-    }
-
 type alias SelectableCard = Selectable Card.Model
 
 -- MODEL
@@ -28,11 +24,6 @@ type alias SelectableCard = Selectable Card.Model
 init : Model
 init = { cards = List.map withoutSelection cards }
 
-withoutSelection : item -> Selectable item
-withoutSelection item =
-    { item = item
-    , selected = False
-    }
 
 cards : List Card.Model
 cards = [ { shape = Diamond, number = 3, color = Red }
@@ -53,26 +44,25 @@ update message model =
             { model | cards = updateElement model.cards id }
 
 updateElement : List SelectableCard -> Int -> List SelectableCard
-updateElement list indexToSendTo =
+updateElement selectableCards indexToSendTo =
   let
-    send : Int -> Selectable Card.Model -> Selectable Card.Model
-    send index selectable =
+    withUpdateAtIndex index selectable =
       if index == indexToSendTo then
-        { selectable | selected = not selectable.selected}
+        Selectable.toggle selectable
       else
         selectable
   in
-    List.indexedMap send list
+    List.indexedMap withUpdateAtIndex selectableCards
 
 -- VIEW
 
 view : Model -> Html Msg
 view model =
-    let cards = List.indexedMap viewIndexedCounter model.cards in
+    let cards = List.indexedMap viewIndexedCard model.cards in
       div [] cards
 
-viewIndexedCounter : Int -> Selectable Card.Model -> Html Msg
-viewIndexedCounter id selectable =
+viewIndexedCard : Int -> SelectableCard -> Html Msg
+viewIndexedCard id selectable =
   span [
         onClick (ToggleSelect id),
         style [("border", selectableBorder selectable)]
@@ -81,5 +71,7 @@ viewIndexedCounter id selectable =
       ]
 
 selectableBorder : Selectable a -> String
-selectableBorder selectable = if selectable.selected then "1px solid red" else "1px solid black"
+selectableBorder selectable =
+    if selectable.selected then "1px solid red"
+    else "1px solid black"
 
