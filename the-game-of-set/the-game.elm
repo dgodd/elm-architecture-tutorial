@@ -3,7 +3,7 @@ import Html.App as Html
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import String exposing (repeat)
-import Card exposing (Color (..), Shape (..))
+import Card exposing (Color (..), Shape (..), Number (..))
 import Selectable exposing (..)
 
 main =
@@ -29,15 +29,15 @@ init = { cards = List.map unselected cards
 
 
 cards : List Card.Model
-cards = [ { shape = Diamond, number = 3, color = Red }
-        , { shape = Rectangle, number = 2, color = Blue }
-        , { shape = Diamond, number = 1, color = Red }
-        , { shape = Squiggle, number = 2, color = Blue }
-        , { shape = Squiggle, number = 1, color = Blue }
-        , { shape = Squiggle, number = 3, color = Blue }
-        , { shape = Squiggle, number = 1, color = Blue }
-        , { shape = Squiggle, number = 2, color = Blue }
-        , { shape = Squiggle, number = 2, color = Blue }
+cards = [ { shape = Diamond, number = Three, color = Red }
+        , { shape = Rectangle, number = Two, color = Blue }
+        , { shape = Diamond, number = One, color = Red }
+        , { shape = Squiggle, number = Two, color = Blue }
+        , { shape = Squiggle, number = One, color = Blue }
+        , { shape = Squiggle, number = Three, color = Blue }
+        , { shape = Squiggle, number = One, color = Blue }
+        , { shape = Squiggle, number = Two, color = Blue }
+        , { shape = Squiggle, number = Two, color = Blue }
         ]
 
 -- UPDATE
@@ -60,8 +60,14 @@ updateSelectionsANDSetStatus index model =
 
 isAValidSet : List SelectableCard -> Bool
 isAValidSet cards =
-    let filtered = List.filter selected cards in
-        List.length filtered == 3
+    let
+    filteredSelected = List.filter selected cards
+    filtered = List.map .item filteredSelected
+    colors = List.map .color filtered
+    firstColor = Maybe.withDefault Blue (List.head colors)
+    colorsAllSame = List.all (\color -> firstColor == color) colors
+    in
+        List.length filtered == 3 && colorsAllSame
 
 selected : Selectable item -> Bool
 selected selectable = selectable.selected
