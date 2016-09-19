@@ -30,14 +30,14 @@ init = { cards = List.map unselected cards
 
 cards : List Card.Model
 cards = [ { shape = Diamond, number = Three, color = Red }
-        , { shape = Rectangle, number = Two, color = Blue }
+        , { shape = Oval, number = Two, color = Blue }
         , { shape = Diamond, number = One, color = Red }
         , { shape = Squiggle, number = Two, color = Blue }
-        , { shape = Squiggle, number = One, color = Blue }
+        , { shape = Oval, number = One, color = Blue }
         , { shape = Squiggle, number = Three, color = Blue }
-        , { shape = Squiggle, number = One, color = Blue }
-        , { shape = Squiggle, number = Two, color = Blue }
-        , { shape = Squiggle, number = Two, color = Blue }
+        , { shape = Diamond, number = One, color = Blue }
+        , { shape = Squiggle, number = Two, color = Green }
+        , { shape = Oval, number = Two, color = Blue }
         ]
 
 -- UPDATE
@@ -65,9 +65,23 @@ isAValidSet cards =
     filtered = List.map .item filteredSelected
     colors = List.map .color filtered
     firstColor = Maybe.withDefault Blue (List.head colors)
+
+
     colorsAllSame = List.all (\color -> firstColor == color) colors
+    different = allDifferent(colors)
     in
-        List.length filtered == 3 && colorsAllSame
+        List.length filtered == 3 && (colorsAllSame || different)
+
+allSameOrDifferent : List a -> Bool
+allSameOrDifferent list =
+    implement me!
+
+
+allDifferent : List a -> Bool
+allDifferent list =
+    case list of
+        first :: tail -> (List.all (\other -> other /= first) tail) && (allDifferent tail)
+        [] -> True
 
 selected : Selectable item -> Bool
 selected selectable = selectable.selected
@@ -92,7 +106,9 @@ viewIndexedCard : Int -> SelectableCard -> Html Msg
 viewIndexedCard id selectable =
   span [
         onClick (ToggleSelect id),
-        style [("border", selectableBorder selectable)]
+        style [ ("border", selectableBorder selectable)
+              , ("display", "inline-block")
+        ]
       ] [
         Card.view selectable.item
       ]
