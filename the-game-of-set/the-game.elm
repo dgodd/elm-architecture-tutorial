@@ -5,6 +5,8 @@ import Html.Events exposing (onClick)
 import String exposing (repeat)
 import Card exposing (Color (..), Shape (..), Number (..))
 import Selectable exposing (..)
+import Helpers exposing (shuffle)
+import Random exposing (initialSeed)
 
 main =
   Html.beginnerProgram
@@ -29,16 +31,11 @@ init = { cards = List.map unselected cards
 
 
 cards : List Card.Model
-cards = [ { shape = Diamond, number = Three, color = Red }
-        , { shape = Oval, number = Two, color = Blue }
-        , { shape = Diamond, number = One, color = Red }
-        , { shape = Squiggle, number = Two, color = Blue }
-        , { shape = Oval, number = One, color = Blue }
-        , { shape = Squiggle, number = Three, color = Blue }
-        , { shape = Diamond, number = One, color = Blue }
-        , { shape = Squiggle, number = Two, color = Green }
-        , { shape = Oval, number = Two, color = Blue }
-        ]
+cards =
+  let
+      shuffled = shuffle (Random.initialSeed 31415) [0..26]
+  in
+      List.map Card.init shuffled
 
 -- UPDATE
 

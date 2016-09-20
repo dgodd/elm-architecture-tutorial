@@ -1,4 +1,4 @@
-module Card exposing (Model, view, Color (..), Shape (..), Number (..))
+module Card exposing (init, Model, view, Color (..), Shape (..), Number (..))
 import Html exposing (..)
 import Html.App as Html
 import Html.Attributes exposing (..)
@@ -14,6 +14,24 @@ type alias Model = {
 type Color = Red | Green | Blue
 type Shape = Diamond | Oval | Squiggle
 type Number = One | Two | Three
+
+init : Int -> Model
+init num =
+    let
+        shape = case num `rem` 3 of
+            0 -> Diamond
+            1 -> Oval
+            _ -> Squiggle
+        number = case num // 3 `rem` 3 of
+            0 -> One
+            1 -> Two
+            _ -> Three
+        color = case num // 9 `rem` 3 of
+            0 -> Red
+            1 -> Green
+            _ -> Blue
+    in
+        { shape = shape, number = number, color = color }
 
 asciiArt : Shape -> String
 asciiArt shape =
