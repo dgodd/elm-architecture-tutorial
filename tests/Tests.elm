@@ -3,6 +3,7 @@ module Tests exposing (..)
 import Test exposing (..)
 import Expect
 import String
+import Random
 import Helpers
 
 
@@ -20,11 +21,18 @@ example =
                 Expect.fail "failed as expected!"
         ]
 
+-- all : Test
+-- all =
+--     describe "Shuffle Suite"
+--         [ test "simple" <|
+--             \() ->
+--                 Expect.equal (Helpers.shuffle (Random.initialSeed 123) []) []
+--         ]
+
 all : Test
 all =
-    describe "Shuffle Suite"
+    describe "Without Suite"
         [ test "simple" <|
             \() ->
-                Expect.equal (Helpers.shuffle []) []
+                Expect.equal (Helpers.without 2 [1,2,3,4]) [1,2,4]
         ]
-
