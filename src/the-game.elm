@@ -3,7 +3,7 @@ import Html.App as Html
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import String exposing (repeat)
-import Card exposing (Color (..), Shape (..), Number (..))
+import Card exposing (init, Color (..), Shape (..), Number (..))
 import Selectable exposing (..)
 import Helpers exposing (shuffle)
 import Random exposing (initialSeed)
@@ -17,6 +17,7 @@ main =
 
 type alias Model =
   { cards : List (SelectableCard)
+  , other_cards : List (Card.Model)
   , validSetSelected : Bool
   }
 
@@ -25,7 +26,8 @@ type alias SelectableCard = Selectable Card.Model
 -- MODEL
 
 init : Model
-init = { cards = List.map unselected cards
+init = { cards = List.map unselected (List.take 12 cards)
+       , other_cards = List.drop 12 cards
        , validSetSelected = False
        }
 
